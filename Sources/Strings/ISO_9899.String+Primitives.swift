@@ -10,7 +10,7 @@ import String_Primitives
 
 #if !os(Windows)
 
-extension ISO_9899.String.Owned {
+extension ISO_9899.String {
     /// Creates an owned ISO C byte string from an OS-native path string view.
     ///
     /// Available only on POSIX platforms where both use byte-oriented strings.
@@ -70,8 +70,8 @@ extension String_Primitives.String {
 //
 // These conversions should go through Swift.String which handles Unicode properly:
 //
-//   let isoOwned: ISO_9899.String.Owned = ...
-//   let swiftString = Swift.String(isoOwned)
+//   let iso: ISO_9899.String = ...
+//   let swiftString = Swift.String(iso)
 //   let primitives = String_Primitives.String(swiftString)
 //
 // This makes the encoding policy explicit rather than hidden.

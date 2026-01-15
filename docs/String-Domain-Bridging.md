@@ -19,7 +19,7 @@ These types serve different purposes and have different invariants. Yet practica
 ```swift
 let userInput: Swift.String = getUserInput()
 let path = String_Primitives.String(userInput)  // For OS API
-let cString = ISO_9899.String.Owned(userInput)  // For C library
+let cString = ISO_9899.String(userInput)        // For C library
 ```
 
 This work presents a principled bridging layer that makes such conversions safe, explicit, and ergonomic.

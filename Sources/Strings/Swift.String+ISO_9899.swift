@@ -27,7 +27,7 @@ extension Swift.String {
     ///
     /// - Parameter owned: An owned ISO C byte string to consume.
     @inlinable
-    public init(_ owned: consuming ISO_9899.String.Owned) {
+    public init(_ owned: consuming ISO_9899.String) {
         self = owned.withUnsafePointer { ptr in
             Swift.String(cString: UnsafeRawPointer(ptr).assumingMemoryBound(to: CChar.self))
         }
@@ -36,7 +36,7 @@ extension Swift.String {
 
 // MARK: - ISO_9899.String FROM Swift.String
 
-extension ISO_9899.String.Owned {
+extension ISO_9899.String {
     /// Creates an owned ISO C byte string from a Swift String.
     ///
     /// Encodes the string as UTF-8.
