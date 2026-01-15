@@ -1,0 +1,79 @@
+// ISO_9899.String+Primitives.swift
+// swift-strings
+//
+// Bridges between ISO_9899.String and String_Primitives.String
+
+import ISO_9899
+import String_Primitives
+
+// MARK: - ISO_9899.String FROM String_Primitives.String (POSIX only)
+
+#if !os(Windows)
+
+extension ISO_9899.String.Owned {
+    /// Creates an owned ISO C byte string from an OS-native path string view.
+    ///
+    /// Available only on POSIX platforms where both use byte-oriented strings.
+    /// On Windows, String_Primitives uses UTF-16 which cannot be directly
+    /// converted to ISO C byte strings without encoding policy.
+    ///
+    /// - Parameter view: A borrowed view of an OS-native path string.
+    @inlinable
+    public init(_ view: borrowing String_Primitives.String.View) {
+        let length = String_Primitives.String.length(of: view.pointer)
+        let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: length + 1)
+
+        // Copy bytes (CChar to UInt8 - same underlying representation on POSIX)
+        view.withUnsafePointer { src in
+            for i in 0...length {
+                buffer[i] = ISO_9899.String.Char(bitPattern: src[i])
+            }
+        }
+
+        self.init(adopting: buffer, count: length)
+    }
+}
+
+extension String_Primitives.String {
+    /// Creates an owned OS-native path string from an ISO C byte string view.
+    ///
+    /// Available only on POSIX platforms where both use byte-oriented strings.
+    ///
+    /// - Parameter view: A borrowed view of an ISO C byte string.
+    @inlinable
+    public init(_ view: borrowing ISO_9899.String.View) {
+        let length = view.length
+        let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: length + 1)
+
+        // Copy bytes (UInt8 to CChar - same underlying representation on POSIX)
+        view.withUnsafePointer { src in
+            for i in 0...length {
+                buffer[i] = String_Primitives.String.Char(bitPattern: src[i])
+            }
+        }
+
+        self.init(adopting: buffer, count: length)
+    }
+}
+
+#endif
+
+// MARK: - Documentation for Windows
+
+#if os(Windows)
+
+// On Windows, direct conversion between ISO_9899.String (UInt8 bytes) and
+// String_Primitives.String (UInt16 UTF-16) requires encoding decisions:
+//
+// - ISO_9899 → Primitives: Need to decode bytes as some encoding, then encode as UTF-16
+// - Primitives → ISO_9899: Need to decode UTF-16, then encode as some byte encoding
+//
+// These conversions should go through Swift.String which handles Unicode properly:
+//
+//   let isoOwned: ISO_9899.String.Owned = ...
+//   let swiftString = Swift.String(isoOwned)
+//   let primitives = String_Primitives.String(swiftString)
+//
+// This makes the encoding policy explicit rather than hidden.
+
+#endif
