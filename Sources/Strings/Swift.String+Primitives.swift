@@ -84,11 +84,11 @@ extension String_Primitives.String {
         }
         self.init(adopting: buffer, count: utf16.count - 1)
         #else
-        // POSIX: UTF-8 via CChar
+        // POSIX: UTF-8 (both utf8 and String.Char are UInt8)
         let utf8 = Array(string.utf8) + [0]
         let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: utf8.count)
         for (i, byte) in utf8.enumerated() {
-            buffer[i] = String_Primitives.String.Char(bitPattern: byte)
+            buffer[i] = byte
         }
         self.init(adopting: buffer, count: utf8.count - 1)
         #endif
@@ -125,13 +125,13 @@ extension Swift.String {
         let view = String_Primitives.String.View(UnsafePointer(buffer))
         return try body(view)
         #else
-        // POSIX: UTF-8 via CChar
+        // POSIX: UTF-8 (both utf8 and String.Char are UInt8)
         let utf8Array = Array(self.utf8)
         let count = utf8Array.count
         let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: count + 1)
         defer { buffer.deallocate() }
         for (i, byte) in utf8Array.enumerated() {
-            buffer[i] = String_Primitives.String.Char(bitPattern: byte)
+            buffer[i] = byte
         }
         buffer[count] = 0  // null-terminate
         let view = String_Primitives.String.View(UnsafePointer(buffer))

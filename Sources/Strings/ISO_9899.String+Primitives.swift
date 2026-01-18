@@ -23,10 +23,10 @@ extension ISO_9899.String {
         let length = String_Primitives.String.length(of: view.pointer)
         let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: length + 1)
 
-        // Copy bytes (CChar to UInt8 - same underlying representation on POSIX)
+        // Copy bytes (both are UInt8 on POSIX)
         view.withUnsafePointer { src in
             for i in 0...length {
-                buffer[i] = ISO_9899.String.Char(bitPattern: src[i])
+                buffer[i] = src[i]
             }
         }
 
@@ -45,10 +45,10 @@ extension String_Primitives.String {
         let length = view.length
         let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: length + 1)
 
-        // Copy bytes (UInt8 to CChar - same underlying representation on POSIX)
+        // Copy bytes (both are UInt8 on POSIX)
         view.withUnsafePointer { src in
             for i in 0...length {
-                buffer[i] = String_Primitives.String.Char(bitPattern: src[i])
+                buffer[i] = src[i]
             }
         }
 
