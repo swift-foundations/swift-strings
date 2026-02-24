@@ -3,7 +3,8 @@
 //
 // Bridges between Swift.String and String_Primitives.String
 
-import String_Primitives
+public import String_Primitives
+
 
 // MARK: - Swift.String FROM String_Primitives.String
 

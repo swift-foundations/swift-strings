@@ -3,8 +3,9 @@
 //
 // Bridges between ISO_9899.String and String_Primitives.String
 
-import ISO_9899
-import String_Primitives
+public import ISO_9899
+public import String_Primitives
+
 
 // MARK: - ISO_9899.String FROM String_Primitives.String (POSIX only)
 

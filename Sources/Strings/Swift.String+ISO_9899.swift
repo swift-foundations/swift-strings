@@ -3,7 +3,8 @@
 //
 // Bridges between Swift.String and ISO_9899.String
 
-import ISO_9899
+public import ISO_9899
+
 
 // MARK: - Swift.String FROM ISO_9899.String
 
