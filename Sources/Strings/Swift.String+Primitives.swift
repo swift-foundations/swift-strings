@@ -123,7 +123,7 @@ extension Swift.String {
             buffer[i] = unit
         }
         buffer[count] = 0  // null-terminate
-        let view = String_Primitives.String.View(UnsafePointer(buffer))
+        let view = String_Primitives.String.View(UnsafePointer(buffer), count: count)
         return try body(view)
         #else
         // POSIX: UTF-8 (both utf8 and String.Char are UInt8)
@@ -135,7 +135,7 @@ extension Swift.String {
             buffer[i] = byte
         }
         buffer[count] = 0  // null-terminate
-        let view = String_Primitives.String.View(UnsafePointer(buffer))
+        let view = String_Primitives.String.View(UnsafePointer(buffer), count: count)
         return try body(view)
         #endif
     }
