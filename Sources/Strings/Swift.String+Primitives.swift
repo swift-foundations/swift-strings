@@ -59,6 +59,21 @@ extension Swift.String {
     }
 }
 
+// MARK: - Swift.String FROM Span<UInt8>
+
+extension Swift.String {
+    /// Creates a Swift String from a span of UTF-8 bytes.
+    ///
+    /// Validates the bytes as UTF-8 and copies them into an owned String.
+    ///
+    /// - Parameter span: A span of UTF-8 code units.
+    /// - Throws: `UTF8.ValidationError` if the bytes are not valid UTF-8.
+    @inlinable
+    public init(_ span: Span<UInt8>) throws(UTF8.ValidationError) {
+        self = Swift.String(copying: try UTF8Span(validating: span))
+    }
+}
+
 // MARK: - String_Primitives.String FROM Swift.String
 
 extension String_Primitives.String {
