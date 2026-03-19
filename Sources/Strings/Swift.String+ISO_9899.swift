@@ -17,9 +17,7 @@ extension Swift.String {
     /// - Note: Invalid UTF-8 sequences are replaced with the Unicode replacement character.
     @inlinable
     public init(_ view: borrowing ISO_9899.String.View) {
-        self = view.withUnsafePointer { ptr in
-            Swift.String(cString: UnsafeRawPointer(ptr).assumingMemoryBound(to: CChar.self))
-        }
+        self = unsafe Swift.String(cString: UnsafeRawPointer(view.pointer).assumingMemoryBound(to: CChar.self))
     }
 
     /// Creates a Swift String from an owned ISO C byte string.
@@ -29,9 +27,7 @@ extension Swift.String {
     /// - Parameter owned: An owned ISO C byte string to consume.
     @inlinable
     public init(_ owned: consuming ISO_9899.String) {
-        self = owned.withUnsafePointer { ptr in
-            Swift.String(cString: UnsafeRawPointer(ptr).assumingMemoryBound(to: CChar.self))
-        }
+        self = unsafe Swift.String(cString: UnsafeRawPointer(owned.view.pointer).assumingMemoryBound(to: CChar.self))
     }
 }
 

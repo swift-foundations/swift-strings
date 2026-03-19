@@ -21,14 +21,13 @@ extension ISO_9899.String {
     /// - Parameter view: A borrowed view of an OS-native path string.
     @inlinable
     public init(_ view: borrowing String_Primitives.String.View) {
-        let length = String_Primitives.String.length(of: view.pointer)
+        let length = unsafe String_Primitives.String.length(of: view.pointer)
         let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: length + 1)
 
         // Copy bytes (both are UInt8 on POSIX)
-        view.withUnsafePointer { src in
-            for i in 0...length {
-                buffer[i] = src[i]
-            }
+        let src = unsafe view.pointer
+        for i in 0...length {
+            unsafe (buffer[i] = src[i])
         }
 
         self.init(adopting: buffer, count: length)
@@ -47,10 +46,9 @@ extension String_Primitives.String {
         let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: length + 1)
 
         // Copy bytes (both are UInt8 on POSIX)
-        view.withUnsafePointer { src in
-            for i in 0...length {
-                buffer[i] = src[i]
-            }
+        let src = view.pointer
+        for i in 0...length {
+            unsafe (buffer[i] = src[i])
         }
 
         self.init(adopting: buffer, count: length)

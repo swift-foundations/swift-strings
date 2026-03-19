@@ -18,23 +18,19 @@ extension Swift.String {
     @inlinable
     public init(_ view: borrowing String_Primitives.String.View) {
         #if os(Windows)
-        self = view.withUnsafePointer { ptr in
-            // Windows: UTF-16
-            var chars: [Unicode.Scalar] = []
-            var current = ptr
-            while current.pointee != 0 {
-                if let scalar = Unicode.Scalar(current.pointee) {
-                    chars.append(scalar)
-                }
-                current = current.successor()
+        // Windows: UTF-16
+        var chars: [Unicode.Scalar] = []
+        var current = unsafe view.pointer
+        while unsafe current.pointee != 0 {
+            if let scalar = unsafe Unicode.Scalar(current.pointee) {
+                chars.append(scalar)
             }
-            return Swift.String(Swift.String.UnicodeScalarView(chars))
+            unsafe (current = current.successor())
         }
+        self = Swift.String(Swift.String.UnicodeScalarView(chars))
         #else
-        self = view.withUnsafePointer { ptr in
-            // POSIX: UTF-8 via CChar
-            Swift.String(cString: ptr)
-        }
+        // POSIX: UTF-8 via CChar
+        self = unsafe Swift.String(cString: view.pointer)
         #endif
     }
 
@@ -46,21 +42,19 @@ extension Swift.String {
     @inlinable
     public init(_ owned: consuming String_Primitives.String) {
         #if os(Windows)
-        self = owned.withUnsafePointer { ptr in
-            var chars: [Unicode.Scalar] = []
-            var current = ptr
-            while current.pointee != 0 {
-                if let scalar = Unicode.Scalar(current.pointee) {
-                    chars.append(scalar)
-                }
-                current = current.successor()
+        // Windows: UTF-16
+        var chars: [Unicode.Scalar] = []
+        var current = unsafe owned.view.pointer
+        while unsafe current.pointee != 0 {
+            if let scalar = unsafe Unicode.Scalar(current.pointee) {
+                chars.append(scalar)
             }
-            return Swift.String(Swift.String.UnicodeScalarView(chars))
+            unsafe (current = current.successor())
         }
+        self = Swift.String(Swift.String.UnicodeScalarView(chars))
         #else
-        self = owned.withUnsafePointer { ptr in
-            Swift.String(cString: ptr)
-        }
+        // POSIX: UTF-8 via CChar
+        self = unsafe Swift.String(cString: owned.view.pointer)
         #endif
     }
 }
