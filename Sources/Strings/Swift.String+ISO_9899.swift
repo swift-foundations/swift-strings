@@ -61,7 +61,10 @@ extension Swift.String {
     /// - Parameter body: A closure that receives the borrowed view.
     /// - Returns: The value returned by the closure.
     /// - Throws: Rethrows any error thrown by the closure.
-    // WORKAROUND: @_optimize(none) — CopyPropagation false positive. TRACKING: swift-buffer-primitives/Research/rawlayout-release-crash-investigation.md (Bug 2)
+    // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable ISO_9899.String.View.
+    // Same compiler bug as Property.View (mark_dependence classified as PointerEscape), but this
+    // type's ~Escapable cannot be removed (it's in swift-standards, not under our control for this fix).
+    // WHEN TO REMOVE: When swiftlang/swift fixes mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46)
     @_optimize(none)
     @inlinable
     public func withISO9899View<R: ~Copyable, E: Swift.Error>(
