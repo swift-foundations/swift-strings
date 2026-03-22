@@ -30,7 +30,7 @@ extension ISO_9899.String {
             unsafe (buffer[i] = src[i])
         }
 
-        self.init(adopting: buffer, count: length)
+        unsafe self.init(adopting: buffer, count: length)
     }
 }
 
@@ -46,12 +46,12 @@ extension String_Primitives.String {
         let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: length + 1)
 
         // Copy bytes (both are UInt8 on POSIX)
-        let src = view.pointer
+        let src = unsafe view.pointer
         for i in 0...length {
             unsafe (buffer[i] = src[i])
         }
 
-        self.init(adopting: buffer, count: length)
+        unsafe self.init(adopting: buffer, count: length)
     }
 }
 
