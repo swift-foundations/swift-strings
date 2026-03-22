@@ -118,6 +118,8 @@ extension Swift.String {
     /// - Parameter body: A closure that receives the borrowed view.
     /// - Returns: The value returned by the closure.
     /// - Throws: Rethrows any error thrown by the closure.
+    // WORKAROUND: @_optimize(none) — CopyPropagation false positive. TRACKING: swift-buffer-primitives/Research/rawlayout-release-crash-investigation.md (Bug 2)
+    @_optimize(none)
     @inlinable
     public func withPrimitivesView<R: ~Copyable, E: Swift.Error>(
         _ body: (borrowing String_Primitives.String.View) throws(E) -> R
