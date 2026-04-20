@@ -31,6 +31,12 @@ let package = Package(
                 .enableExperimentalFeature("Lifetimes"),
             ]
         ),
+        .testTarget(
+            name: "Strings Tests",
+            dependencies: [
+                "Strings",
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

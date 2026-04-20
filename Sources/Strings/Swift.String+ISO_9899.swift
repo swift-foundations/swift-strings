@@ -78,7 +78,7 @@ extension Swift.String {
             unsafe (buffer[i] = byte)
         }
         unsafe (buffer[count] = 0)  // null-terminate
-        let view = unsafe ISO_9899.String.View(UnsafePointer(buffer))
+        let view = unsafe ISO_9899.String.View(UnsafePointer(buffer), count: count)
         return try body(view)
     }
 }
