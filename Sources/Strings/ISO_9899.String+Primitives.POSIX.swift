@@ -34,7 +34,7 @@ extension ISO_9899.String {
     ///
     /// - Parameter view: A borrowed view of an OS-native path string.
     @inlinable
-    public init(_ view: borrowing String_Primitives.String.View) {
+    public init(_ view: borrowing String_Primitives.String.Borrowed) {
         let length = unsafe String_Primitives.String.length(of: view.pointer)
         let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: length + 1)
 
