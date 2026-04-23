@@ -16,7 +16,7 @@ extension Swift.String {
     /// - Parameter view: A borrowed view of an ISO C byte string.
     /// - Note: Invalid UTF-8 sequences are replaced with the Unicode replacement character.
     @inlinable
-    public init(_ view: borrowing ISO_9899.String.View) {
+    public init(_ view: borrowing ISO_9899.String.Borrowed) {
         self = unsafe Swift.String(cString: UnsafeRawPointer(view.pointer).assumingMemoryBound(to: CChar.self))
     }
 
@@ -61,14 +61,14 @@ extension Swift.String {
     /// - Parameter body: A closure that receives the borrowed view.
     /// - Returns: The value returned by the closure.
     /// - Throws: Rethrows any error thrown by the closure.
-    // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable ISO_9899.String.View.
+    // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable ISO_9899.String.Borrowed.
     // Same compiler bug as Property.View (mark_dependence classified as PointerEscape), but this
     // type's ~Escapable cannot be removed (it's in swift-standards, not under our control for this fix).
     // WHEN TO REMOVE: When swiftlang/swift fixes mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46)
     @_optimize(none)
     @inlinable
     public func withISO9899View<R: ~Copyable, E: Swift.Error>(
-        _ body: (borrowing ISO_9899.String.View) throws(E) -> R
+        _ body: (borrowing ISO_9899.String.Borrowed) throws(E) -> R
     ) throws(E) -> R {
         let utf8Array = Array(self.utf8)
         let count = utf8Array.count
@@ -78,7 +78,7 @@ extension Swift.String {
             unsafe (buffer[i] = byte)
         }
         unsafe (buffer[count] = 0)  // null-terminate
-        let view = unsafe ISO_9899.String.View(UnsafePointer(buffer), count: count)
+        let view = unsafe ISO_9899.String.Borrowed(UnsafePointer(buffer), count: count)
         return try body(view)
     }
 }

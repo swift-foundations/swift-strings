@@ -55,7 +55,7 @@ extension String_Primitives.String {
     ///
     /// - Parameter view: A borrowed view of an ISO C byte string.
     @inlinable
-    public init(_ view: borrowing ISO_9899.String.View) {
+    public init(_ view: borrowing ISO_9899.String.Borrowed) {
         let length = view.length
         let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: length + 1)
 
