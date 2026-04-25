@@ -47,6 +47,53 @@ extension Swift.String {
     ) -> Swift.String? {
         Swift.String.strictUTF16(codeUnits)
     }
+
+    /// Lossily decodes platform-native code units, substituting U+FFFD
+    /// (Unicode replacement character) for any invalid sequence.
+    ///
+    /// Sibling of ``Swift/String/strict(platformNative:)``: same input
+    /// shape, same dispatch direction, but always succeeds — invalid
+    /// sequences become U+FFFD instead of returning `nil`. Single entry
+    /// point for lossy-decoding platform-native filesystem / path code
+    /// units to `Swift.String`. Consumer code can write a single
+    /// unconditional call site instead of a `#if os(Windows)` /
+    /// `Swift.String(decoding: codeUnits, as: UTF16.self)` /
+    /// `Swift.String(decoding: codeUnits, as: UTF8.self)` hand-dispatch:
+    ///
+    /// ```swift
+    /// // Before
+    /// #if os(Windows)
+    /// let s = Swift.String(decoding: codeUnits, as: UTF16.self)
+    /// #else
+    /// let s = Swift.String(decoding: codeUnits, as: UTF8.self)
+    /// #endif
+    ///
+    /// // After
+    /// let s = Swift.String.lossy(platformNative: codeUnits)
+    /// ```
+    ///
+    /// - POSIX: delegates to `Swift.String(decoding: codeUnits, as: UTF8.self)`.
+    /// - Windows: delegates to `Swift.String(decoding: codeUnits, as: UTF16.self)`.
+    ///
+    /// Both branches are stdlib's lossy decoder — invalid sequences
+    /// become U+FFFD per the
+    /// [string-type-ecosystem-model.md](https://github.com/swift-institute/swift-institute/blob/main/Research/string-type-ecosystem-model.md)
+    /// (line 387) "standard library's lossy UTF-8 decoder" semantics.
+    /// Strings containing replacement characters cannot round-trip back
+    /// to the source code units; for round-trip-safe diagnostics use
+    /// ``Swift/String/strict(platformNative:)`` and handle the `nil`
+    /// case with raw-byte preservation.
+    ///
+    /// - Parameter codeUnits: Platform-native code units
+    ///   (`String.Char` — `UInt8` on POSIX, `UInt16` on Windows).
+    /// - Returns: The decoded string. Always succeeds; invalid sequences
+    ///   substituted with U+FFFD.
+    @inlinable
+    public static func lossy(
+        platformNative codeUnits: [String_Primitives.String.Char]
+    ) -> Swift.String {
+        Swift.String(decoding: codeUnits, as: UTF16.self)
+    }
 }
 
 #endif
