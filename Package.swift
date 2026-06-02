@@ -17,8 +17,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "../../swift-primitives/swift-string-primitives"),
-        .package(path: "../../swift-iso/swift-iso-9899"),
+        .package(url: "https://github.com/swift-primitives/swift-string-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-iso/swift-iso-9899.git", branch: "main"),
     ],
     targets: [
         .target(
