@@ -19,6 +19,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/swift-primitives/swift-string-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-iso/swift-iso-9899.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-ascii-serializer-primitives.git", branch: "main"),
     ],
     targets: [
         .target(
@@ -26,6 +27,7 @@ let package = Package(
             dependencies: [
                 .product(name: "String Primitives", package: "swift-string-primitives"),
                 .product(name: "ISO 9899", package: "swift-iso-9899"),
+                .product(name: "ASCII Hexadecimal Serializer Primitives", package: "swift-ascii-serializer-primitives"),
             ],
             swiftSettings: [
                 .enableExperimentalFeature("Lifetimes"),
