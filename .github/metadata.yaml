@@ -1,6 +1,6 @@
 # .github/metadata.yaml
 # Triaged by AI-assisted bulk pass (2026-04-29).
-description: "Strings for Swift."
+description: "Strict UTF-8/UTF-16 decoding and String bridging to OS-native path and ISO C byte-string types for Swift."
 topics:
   - foundations
   - strings
