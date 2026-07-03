@@ -9,9 +9,9 @@
 //
 // ===----------------------------------------------------------------------===//
 
-import Testing
 import ISO_9899
 import String_Primitives
+import Testing
 
 @testable import Strings
 
@@ -131,11 +131,11 @@ struct ISO9899StringRoundTrip {
 
         static let fixtures: [Swift.String] = handWritten + utf8MultiByte + randomASCII
 
-    static let handWritten: [Swift.String] = PrimitivesStringRoundTrip.handWritten
+        static let handWritten: [Swift.String] = PrimitivesStringRoundTrip.handWritten
 
-    static let utf8MultiByte: [Swift.String] = PrimitivesStringRoundTrip.utf8MultiByte
+        static let utf8MultiByte: [Swift.String] = PrimitivesStringRoundTrip.utf8MultiByte
 
-    static let randomASCII: [Swift.String] = PrimitivesStringRoundTrip.randomASCII
+        static let randomASCII: [Swift.String] = PrimitivesStringRoundTrip.randomASCII
 
         @Test("Primitives → ISO_9899 → Primitives", arguments: fixtures)
         func primitivesToISOAndBack(fixture: Swift.String) {

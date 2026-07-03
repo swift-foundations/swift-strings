@@ -41,8 +41,10 @@ extension Swift.String {
             switch utf8.decode(&iterator) {
             case .scalarValue(let scalar):
                 scalars.append(scalar)
+
             case .emptyInput:
-                return Swift.String(Swift.String.UnicodeScalarView(scalars))
+                return Swift.String(Self.UnicodeScalarView(scalars))
+
             case .error:
                 return nil
             }
@@ -78,8 +80,10 @@ extension Swift.String {
             switch utf16.decode(&iterator) {
             case .scalarValue(let scalar):
                 scalars.append(scalar)
+
             case .emptyInput:
-                return Swift.String(Swift.String.UnicodeScalarView(scalars))
+                return Swift.String(Self.UnicodeScalarView(scalars))
+
             case .error:
                 return nil
             }

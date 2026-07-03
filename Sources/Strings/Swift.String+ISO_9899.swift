@@ -5,7 +5,6 @@
 
 public import ISO_9899
 
-
 // MARK: - Swift.String FROM ISO_9899.String
 
 extension Swift.String {

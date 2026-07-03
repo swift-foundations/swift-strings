@@ -24,49 +24,49 @@
 
 #if !os(Windows)
 
-public import ISO_9899
-public import String_Primitives
+    public import ISO_9899
+    public import String_Primitives
 
-// MARK: - ISO_9899.String FROM String_Primitives.String
+    // MARK: - ISO_9899.String FROM String_Primitives.String
 
-extension ISO_9899.String {
-    /// Creates an owned ISO C byte string from an OS-native path string view.
-    ///
-    /// - Parameter view: A borrowed view of an OS-native path string.
-    @inlinable
-    public init(_ view: borrowing String_Primitives.String.Borrowed) {
-        let length = unsafe String_Primitives.String.length(of: view.pointer)
-        let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: length + 1)
+    extension ISO_9899.String {
+        /// Creates an owned ISO C byte string from an OS-native path string view.
+        ///
+        /// - Parameter view: A borrowed view of an OS-native path string.
+        @inlinable
+        public init(_ view: borrowing String_Primitives.String.Borrowed) {
+            let length = unsafe String_Primitives.String.length(of: view.pointer)
+            let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: length + 1)
 
-        // Copy bytes (both are UInt8 on POSIX)
-        let src = unsafe view.pointer
-        for i in 0...length {
-            unsafe (buffer[i] = src[i])
+            // Copy bytes (both are UInt8 on POSIX)
+            let src = unsafe view.pointer
+            for i in 0...length {
+                unsafe (buffer[i] = src[i])
+            }
+
+            unsafe self.init(adopting: buffer, count: length)
         }
-
-        unsafe self.init(adopting: buffer, count: length)
     }
-}
 
-// MARK: - String_Primitives.String FROM ISO_9899.String
+    // MARK: - String_Primitives.String FROM ISO_9899.String
 
-extension String_Primitives.String {
-    /// Creates an owned OS-native path string from an ISO C byte string view.
-    ///
-    /// - Parameter view: A borrowed view of an ISO C byte string.
-    @inlinable
-    public init(_ view: borrowing ISO_9899.String.Borrowed) {
-        let length = view.length
-        let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: length + 1)
+    extension String_Primitives.String {
+        /// Creates an owned OS-native path string from an ISO C byte string view.
+        ///
+        /// - Parameter view: A borrowed view of an ISO C byte string.
+        @inlinable
+        public init(_ view: borrowing ISO_9899.String.Borrowed) {
+            let length = view.length
+            let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: length + 1)
 
-        // Copy bytes (both are UInt8 on POSIX)
-        let src = unsafe view.pointer
-        for i in 0...length {
-            unsafe (buffer[i] = src[i])
+            // Copy bytes (both are UInt8 on POSIX)
+            let src = unsafe view.pointer
+            for i in 0...length {
+                unsafe (buffer[i] = src[i])
+            }
+
+            unsafe self.init(adopting: buffer, count: length)
         }
-
-        unsafe self.init(adopting: buffer, count: length)
     }
-}
 
-#endif // !os(Windows)
+#endif  // !os(Windows)
