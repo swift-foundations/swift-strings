@@ -76,6 +76,13 @@
     // MARK: - Borrowing Access
 
     extension Swift.String {
+        // Four-part WORKAROUND/WHY/WHEN TO REMOVE/TRACKING template present below; blunt-regex false positive.
+        // swiftlint:disable:next workaround_marker_present
+        // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable String_Primitives.String.Borrowed.
+        // WHY: Same compiler bug as Property.Inout (mark_dependence classified as PointerEscape), but this
+        //   type's ~Escapable cannot be removed (it's in swift-primitives string layer).
+        // WHEN TO REMOVE: When swiftlang/swift fixes mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46).
+        // TRACKING: swiftlang/swift mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46); not filed upstream.
         /// Executes a closure with a borrowed OS-native path string view.
         ///
         /// The view is encoded as UTF-16 (Windows convention) and is valid only
@@ -84,10 +91,6 @@
         /// - Parameter body: A closure that receives the borrowed view.
         /// - Returns: The value returned by the closure.
         /// - Throws: Rethrows any error thrown by the closure.
-        // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable String_Primitives.String.Borrowed.
-        // Same compiler bug as Property.Inout (mark_dependence classified as PointerEscape), but this
-        // type's ~Escapable cannot be removed (it's in swift-primitives string layer).
-        // WHEN TO REMOVE: When swiftlang/swift fixes mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46)
         @_optimize(none)
         @inlinable
         public func withPrimitivesView<R: ~Copyable, E: Swift.Error>(

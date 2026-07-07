@@ -52,6 +52,13 @@ extension ISO_9899.String {
 // MARK: - Borrowing Access
 
 extension Swift.String {
+    // Four-part WORKAROUND/WHY/WHEN TO REMOVE/TRACKING template present below; blunt-regex false positive.
+    // swiftlint:disable:next workaround_marker_present
+    // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable ISO_9899.String.Borrowed.
+    // WHY: Same compiler bug as Property.Inout (mark_dependence classified as PointerEscape), but this
+    //   type's ~Escapable cannot be removed (it's in swift-standards, not under our control for this fix).
+    // WHEN TO REMOVE: When swiftlang/swift fixes mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46).
+    // TRACKING: swiftlang/swift mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46); not filed upstream.
     /// Executes a closure with a borrowed ISO C byte string view.
     ///
     /// The view is valid only for the duration of the closure.
@@ -60,10 +67,6 @@ extension Swift.String {
     /// - Parameter body: A closure that receives the borrowed view.
     /// - Returns: The value returned by the closure.
     /// - Throws: Rethrows any error thrown by the closure.
-    // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable ISO_9899.String.Borrowed.
-    // Same compiler bug as Property.Inout (mark_dependence classified as PointerEscape), but this
-    // type's ~Escapable cannot be removed (it's in swift-standards, not under our control for this fix).
-    // WHEN TO REMOVE: When swiftlang/swift fixes mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46)
     @_optimize(none)
     @inlinable
     public func withISO9899View<R: ~Copyable, E: Swift.Error>(
