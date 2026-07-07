@@ -60,8 +60,6 @@
     // MARK: - Borrowing Access
 
     extension Swift.String {
-        // Four-part WORKAROUND/WHY/WHEN TO REMOVE/TRACKING template present below; blunt-regex false positive.
-        // swiftlint:disable:next workaround_marker_present
         // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable String_Primitives.String.Borrowed.
         // WHY: Same compiler bug as Property.Inout (mark_dependence classified as PointerEscape), but this
         //   type's ~Escapable cannot be removed (it's in swift-primitives string layer).
