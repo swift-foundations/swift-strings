@@ -59,22 +59,22 @@ struct PrimitivesStringRoundTrip {
     /// Seeded pseudo-random ASCII fixtures for stochastic coverage.
     static let randomASCII: [Swift.String] = generateASCII(count: 64, seed: 0xC0DE_F00D_DEAD_BEEF)
 
-    @Test("via init + Swift.String(_ owned:)", arguments: fixtures)
-    func roundTripOwned(fixture: Swift.String) {
+    @Test(arguments: fixtures)
+    func `via init + Swift.String(_ owned:)`(fixture: Swift.String) {
         let primitives = String_Primitives.String(fixture)
         let recovered = Swift.String(primitives)
         #expect(recovered == fixture)
     }
 
-    @Test("via init + Swift.String(_ view:)", arguments: fixtures)
-    func roundTripView(fixture: Swift.String) {
+    @Test(arguments: fixtures)
+    func `via init + Swift.String(_ view:)`(fixture: Swift.String) {
         let primitives = String_Primitives.String(fixture)
         let recovered = Swift.String(primitives.view)
         #expect(recovered == fixture)
     }
 
-    @Test("via withPrimitivesView", arguments: fixtures)
-    func roundTripWithPrimitivesView(fixture: Swift.String) {
+    @Test(arguments: fixtures)
+    func `via withPrimitivesView`(fixture: Swift.String) {
         let recovered = fixture.withPrimitivesView { view in
             Swift.String(view)
         }
@@ -95,22 +95,22 @@ struct ISO9899StringRoundTrip {
 
     static let randomASCII: [Swift.String] = PrimitivesStringRoundTrip.randomASCII
 
-    @Test("via init + Swift.String(_ owned:)", arguments: fixtures)
-    func roundTripOwned(fixture: Swift.String) {
+    @Test(arguments: fixtures)
+    func `via init + Swift.String(_ owned:)`(fixture: Swift.String) {
         let iso = ISO_9899.String(fixture)
         let recovered = Swift.String(iso)
         #expect(recovered == fixture)
     }
 
-    @Test("via init + Swift.String(_ view:)", arguments: fixtures)
-    func roundTripView(fixture: Swift.String) {
+    @Test(arguments: fixtures)
+    func `via init + Swift.String(_ view:)`(fixture: Swift.String) {
         let iso = ISO_9899.String(fixture)
         let recovered = Swift.String(iso.view)
         #expect(recovered == fixture)
     }
 
-    @Test("via withISO9899View", arguments: fixtures)
-    func roundTripWithISO9899View(fixture: Swift.String) {
+    @Test(arguments: fixtures)
+    func `via withISO9899View`(fixture: Swift.String) {
         let recovered = fixture.withISO9899View { view in
             Swift.String(view)
         }
@@ -137,8 +137,8 @@ struct ISO9899StringRoundTrip {
 
         static let randomASCII: [Swift.String] = PrimitivesStringRoundTrip.randomASCII
 
-        @Test("Primitives → ISO_9899 → Primitives", arguments: fixtures)
-        func primitivesToISOAndBack(fixture: Swift.String) {
+        @Test(arguments: fixtures)
+        func `Primitives → ISO_9899 → Primitives`(fixture: Swift.String) {
             let primitives = String_Primitives.String(fixture)
             let iso = ISO_9899.String(primitives.view)
             let recovered = String_Primitives.String(iso.view)
@@ -148,8 +148,8 @@ struct ISO9899StringRoundTrip {
             #expect(recoveredSwift == fixture)
         }
 
-        @Test("ISO_9899 → Primitives → ISO_9899", arguments: fixtures)
-        func isoToPrimitivesAndBack(fixture: Swift.String) {
+        @Test(arguments: fixtures)
+        func `ISO_9899 → Primitives → ISO_9899`(fixture: Swift.String) {
             let iso = ISO_9899.String(fixture)
             let primitives = String_Primitives.String(iso.view)
             let recovered = ISO_9899.String(primitives.view)
@@ -170,7 +170,9 @@ private struct SplitMix64 {
     init(seed: UInt64) {
         self.state = seed
     }
+}
 
+extension SplitMix64 {
     mutating func next() -> UInt64 {
         state = state &+ 0x9E37_79B9_7F4A_7C15
         var z = state
