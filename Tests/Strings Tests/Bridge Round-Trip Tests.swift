@@ -27,8 +27,8 @@ import Testing
 
 // MARK: - Swift.String ↔ Primitives.String
 
-@Suite("Swift.String ↔ Primitives.String round-trips")
-struct PrimitivesStringRoundTrip {
+@Suite
+struct `Swift.String ↔ Primitives.String round-trips` {
 
     /// All fixtures combined for parameterized tests. Hand-written + UTF-8 multi-byte
     /// + seeded-random ASCII for stochastic coverage. No interior NUL (rejected by
@@ -84,8 +84,8 @@ struct PrimitivesStringRoundTrip {
 
 // MARK: - Swift.String ↔ ISO_9899.String
 
-@Suite("Swift.String ↔ ISO_9899.String round-trips")
-struct ISO9899StringRoundTrip {
+@Suite
+struct `Swift.String ↔ ISO_9899.String round-trips` {
 
     static let fixtures: [Swift.String] = handWritten + utf8MultiByte + randomASCII
 
@@ -126,8 +126,8 @@ struct ISO9899StringRoundTrip {
 // cross-conversion is not provided as public API and the test is gated.
 
 #if !os(Windows)
-    @Suite("Cross-L1 conversions (POSIX)")
-    struct CrossL1POSIX {
+    @Suite
+    struct `Cross-L1 conversions (POSIX)` {
 
         static let fixtures: [Swift.String] = handWritten + utf8MultiByte + randomASCII
 
