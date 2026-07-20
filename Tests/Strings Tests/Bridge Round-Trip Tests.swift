@@ -89,11 +89,11 @@ struct `Swift.String ↔ ISO_9899.String round-trips` {
 
     static let fixtures: [Swift.String] = handWritten + utf8MultiByte + randomASCII
 
-    static let handWritten: [Swift.String] = PrimitivesStringRoundTrip.handWritten
+    static let handWritten: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.handWritten
 
-    static let utf8MultiByte: [Swift.String] = PrimitivesStringRoundTrip.utf8MultiByte
+    static let utf8MultiByte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.utf8MultiByte
 
-    static let randomASCII: [Swift.String] = PrimitivesStringRoundTrip.randomASCII
+    static let randomASCII: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.randomASCII
 
     @Test(arguments: fixtures)
     func `via init + Swift.String(_ owned:)`(fixture: Swift.String) {
@@ -131,11 +131,11 @@ struct `Swift.String ↔ ISO_9899.String round-trips` {
 
         static let fixtures: [Swift.String] = handWritten + utf8MultiByte + randomASCII
 
-        static let handWritten: [Swift.String] = PrimitivesStringRoundTrip.handWritten
+        static let handWritten: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.handWritten
 
-        static let utf8MultiByte: [Swift.String] = PrimitivesStringRoundTrip.utf8MultiByte
+        static let utf8MultiByte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.utf8MultiByte
 
-        static let randomASCII: [Swift.String] = PrimitivesStringRoundTrip.randomASCII
+        static let randomASCII: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.randomASCII
 
         @Test(arguments: fixtures)
         func `Primitives → ISO_9899 → Primitives`(fixture: Swift.String) {
