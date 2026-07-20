@@ -90,3 +90,26 @@ extension Swift.String {
         }
     }
 }
+
+// MARK: - Lossy Unicode Decoding (platform-bridge policy)
+
+extension Swift.String {
+    /// Lossily decodes UTF-16 code units, replacing invalid sequences.
+    ///
+    /// Decodes with the standard library's UTF-16 decoder: surrogate pairs
+    /// combine into their supplementary-plane scalar, and any malformed
+    /// sequence (such as a lone surrogate) becomes the Unicode replacement
+    /// character (U+FFFD). All `codeUnits.count` units are consumed; interior
+    /// NULs are decoded, not treated as terminators.
+    ///
+    /// This is the decoding policy of the Windows `String_Primitives` bridge
+    /// initializers, mirroring the lossy UTF-8 policy of their POSIX twins
+    /// (`Swift.String(cString:)`).
+    ///
+    /// - Parameter codeUnits: A sequence of UTF-16 code units to decode.
+    /// - Returns: The decoded string, never `nil`.
+    @inlinable
+    public static func lossyUTF16(_ codeUnits: [UInt16]) -> Swift.String {
+        Swift.String(decoding: codeUnits, as: UTF16.self)
+    }
+}

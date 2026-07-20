@@ -18,38 +18,34 @@
     extension Swift.String {
         /// Creates a Swift String from an OS-native path string view.
         ///
-        /// Interprets the view as UTF-16 code units (Windows convention).
+        /// Decodes the view as UTF-16 code units (Windows convention) with
+        /// lossy replacement: surrogate pairs combine into their
+        /// supplementary-plane scalar, and malformed sequences (such as lone
+        /// surrogates) become U+FFFD. All `view.count` code units are decoded.
+        /// This mirrors the lossy UTF-8 policy of the POSIX twin
+        /// (`Swift.String(cString:)`).
         ///
         /// - Parameter view: A borrowed view of an OS-native path string.
         @inlinable
         public init(_ view: borrowing String_Primitives.String.Borrowed) {
-            var chars: [Unicode.Scalar] = []
-            var current = unsafe view.pointer
-            while unsafe current.pointee != 0 {
-                if let scalar = unsafe Unicode.Scalar(current.pointee) {
-                    chars.append(scalar)
-                }
-                unsafe (current = current.successor())
-            }
-            self = Swift.String(Self.UnicodeScalarView(chars))
+            let units = unsafe Array(UnsafeBufferPointer(start: view.pointer, count: view.count))
+            self = Swift.String.lossyUTF16(units)
         }
 
         /// Creates a Swift String from an owned OS-native path string.
         ///
-        /// Consumes the owned string, interpreting its code units as UTF-16.
+        /// Consumes the owned string, decoding its code units as UTF-16
+        /// (Windows convention) with lossy replacement: surrogate pairs
+        /// combine into their supplementary-plane scalar, and malformed
+        /// sequences (such as lone surrogates) become U+FFFD. All
+        /// `view.count` code units are decoded. This mirrors the lossy UTF-8
+        /// policy of the POSIX twin (`Swift.String(cString:)`).
         ///
         /// - Parameter owned: An owned OS-native path string to consume.
         @inlinable
         public init(_ owned: consuming String_Primitives.String) {
-            var chars: [Unicode.Scalar] = []
-            var current = unsafe owned.view.pointer
-            while unsafe current.pointee != 0 {
-                if let scalar = unsafe Unicode.Scalar(current.pointee) {
-                    chars.append(scalar)
-                }
-                unsafe (current = current.successor())
-            }
-            self = Swift.String(Self.UnicodeScalarView(chars))
+            let units = unsafe Array(UnsafeBufferPointer(start: owned.view.pointer, count: owned.view.count))
+            self = Swift.String.lossyUTF16(units)
         }
     }
 
