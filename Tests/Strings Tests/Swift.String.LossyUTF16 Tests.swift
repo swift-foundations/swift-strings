@@ -79,6 +79,6 @@ extension Swift.String.Test.`Edge Case` {
 
     @Test
     func `lossyUTF16 of empty input is the empty string`() {
-        #expect(Swift.String.lossyUTF16([]) == "")
+        #expect(Swift.String.lossyUTF16([]).isEmpty)
     }
 }
