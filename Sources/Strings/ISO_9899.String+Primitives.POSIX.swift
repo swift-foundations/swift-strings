@@ -40,9 +40,7 @@
 
             // Copy bytes (both are UInt8 on POSIX)
             let src = unsafe view.pointer
-            for i in 0...length {
-                unsafe (buffer[i] = src[i])
-            }
+            unsafe buffer.update(from: src, count: length + 1)
 
             unsafe self.init(adopting: buffer, count: length)
         }
@@ -61,9 +59,7 @@
 
             // Copy bytes (both are UInt8 on POSIX)
             let src = unsafe view.pointer
-            for i in 0...length {
-                unsafe (buffer[i] = src[i])
-            }
+            unsafe buffer.update(from: src, count: length + 1)
 
             unsafe self.init(adopting: buffer, count: length)
         }

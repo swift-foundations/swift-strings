@@ -40,12 +40,13 @@ extension ISO_9899.String {
     /// - Parameter string: The Swift String to convert.
     @inlinable
     public init(_ string: Swift.String) {
+        let contentLength = string.utf8.count
         let utf8 = Array(string.utf8) + [0]  // null-terminated
         let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: utf8.count)
-        for (i, byte) in utf8.enumerated() {
-            unsafe (buffer[i] = byte)
+        unsafe utf8.withUnsafeBufferPointer { src in
+            unsafe buffer.update(from: src.baseAddress!, count: src.count)
         }
-        unsafe self.init(adopting: buffer, count: utf8.count - 1)
+        unsafe self.init(adopting: buffer, count: contentLength)
     }
 }
 
@@ -74,8 +75,10 @@ extension Swift.String {
         let count = utf8Array.count
         let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: count + 1)
         defer { unsafe buffer.deallocate() }
-        for (i, byte) in utf8Array.enumerated() {
-            unsafe (buffer[i] = byte)
+        unsafe utf8Array.withUnsafeBufferPointer { src in
+            if let base = src.baseAddress {
+                unsafe buffer.update(from: base, count: src.count)
+            }
         }
         unsafe (buffer[count] = 0)  // null-terminate
         let view = unsafe ISO_9899.String.Borrowed(UnsafePointer(buffer), count: count)

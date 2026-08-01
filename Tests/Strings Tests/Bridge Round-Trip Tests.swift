@@ -29,13 +29,19 @@ import Testing
 
 @Suite
 struct `Swift.String ↔ Primitives.String round-trips` {
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+
+    /// Cross-type round-trip contracts are integration-level: each test exercises the
+    /// bridge boundary between `Swift.String` and `String_Primitives.String`.
+    @Suite struct Integration {}
 
     /// All fixtures combined for parameterized tests. Hand-written + UTF-8 multi-byte
     /// + seeded-random ASCII for stochastic coverage. No interior NUL (rejected by
     /// owning types).
-    static let fixtures: [Swift.String] = Self.handWritten + Self.utf8MultiByte + Self.randomASCII
+    static let fixtures: [Swift.String] = Self.curated + Self.multibyte + Self.randomized
 
-    static let handWritten: [Swift.String] = [
+    static let curated: [Swift.String] = [
         "",
         "a",
         "abc",
@@ -46,7 +52,7 @@ struct `Swift.String ↔ Primitives.String round-trips` {
 
     /// On Windows, these traverse UTF-8 → UTF-16 → UTF-8 at the bridge boundaries;
     /// round-trip must still be byte-identical at the `Swift.String` layer.
-    static let utf8MultiByte: [Swift.String] = [
+    static let multibyte: [Swift.String] = [
         "café",
         "naïve",
         "日本語",
@@ -57,23 +63,27 @@ struct `Swift.String ↔ Primitives.String round-trips` {
     ]
 
     /// Seeded pseudo-random ASCII fixtures for stochastic coverage.
-    static let randomASCII: [Swift.String] = generateASCII(count: 64, seed: 0xC0DE_F00D_DEAD_BEEF)
+    static let randomized: [Swift.String] = generateASCII(count: 64, seed: 0xC0DE_F00D_DEAD_BEEF)
+}
 
-    @Test(arguments: fixtures)
+extension `Swift.String ↔ Primitives.String round-trips`.Integration {
+    typealias Fixtures = `Swift.String ↔ Primitives.String round-trips`
+
+    @Test(arguments: Fixtures.fixtures)
     func `via init + Swift.String(_ owned:)`(fixture: Swift.String) {
         let primitives = String_Primitives.String(fixture)
         let recovered = Swift.String(primitives)
         #expect(recovered == fixture)
     }
 
-    @Test(arguments: fixtures)
+    @Test(arguments: Fixtures.fixtures)
     func `via init + Swift.String(_ view:)`(fixture: Swift.String) {
         let primitives = String_Primitives.String(fixture)
         let recovered = Swift.String(primitives.view)
         #expect(recovered == fixture)
     }
 
-    @Test(arguments: fixtures)
+    @Test(arguments: Fixtures.fixtures)
     func `via withPrimitivesView`(fixture: Swift.String) {
         let recovered = fixture.withPrimitivesView { view in
             Swift.String(view)
@@ -86,30 +96,37 @@ struct `Swift.String ↔ Primitives.String round-trips` {
 
 @Suite
 struct `Swift.String ↔ ISO_9899.String round-trips` {
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
-    static let fixtures: [Swift.String] = handWritten + utf8MultiByte + randomASCII
+    static let fixtures: [Swift.String] = curated + multibyte + randomized
 
-    static let handWritten: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.handWritten
+    static let curated: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.curated
 
-    static let utf8MultiByte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.utf8MultiByte
+    static let multibyte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.multibyte
 
-    static let randomASCII: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.randomASCII
+    static let randomized: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.randomized
+}
 
-    @Test(arguments: fixtures)
+extension `Swift.String ↔ ISO_9899.String round-trips`.Integration {
+    typealias Fixtures = `Swift.String ↔ ISO_9899.String round-trips`
+
+    @Test(arguments: Fixtures.fixtures)
     func `via init + Swift.String(_ owned:)`(fixture: Swift.String) {
         let iso = ISO_9899.String(fixture)
         let recovered = Swift.String(iso)
         #expect(recovered == fixture)
     }
 
-    @Test(arguments: fixtures)
+    @Test(arguments: Fixtures.fixtures)
     func `via init + Swift.String(_ view:)`(fixture: Swift.String) {
         let iso = ISO_9899.String(fixture)
         let recovered = Swift.String(iso.view)
         #expect(recovered == fixture)
     }
 
-    @Test(arguments: fixtures)
+    @Test(arguments: Fixtures.fixtures)
     func `via withISO9899View`(fixture: Swift.String) {
         let recovered = fixture.withISO9899View { view in
             Swift.String(view)
@@ -128,16 +145,23 @@ struct `Swift.String ↔ ISO_9899.String round-trips` {
 #if !os(Windows)
     @Suite
     struct `Cross-L1 conversions (POSIX)` {
+        @Suite struct Unit {}
+        @Suite struct `Edge Case` {}
+        @Suite struct Integration {}
 
-        static let fixtures: [Swift.String] = handWritten + utf8MultiByte + randomASCII
+        static let fixtures: [Swift.String] = curated + multibyte + randomized
 
-        static let handWritten: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.handWritten
+        static let curated: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.curated
 
-        static let utf8MultiByte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.utf8MultiByte
+        static let multibyte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.multibyte
 
-        static let randomASCII: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.randomASCII
+        static let randomized: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.randomized
+    }
 
-        @Test(arguments: fixtures)
+    extension `Cross-L1 conversions (POSIX)`.Integration {
+        typealias Fixtures = `Cross-L1 conversions (POSIX)`
+
+        @Test(arguments: Fixtures.fixtures)
         func `Primitives → ISO_9899 → Primitives`(fixture: Swift.String) {
             let primitives = String_Primitives.String(fixture)
             let iso = ISO_9899.String(primitives.view)
@@ -148,7 +172,7 @@ struct `Swift.String ↔ ISO_9899.String round-trips` {
             #expect(recoveredSwift == fixture)
         }
 
-        @Test(arguments: fixtures)
+        @Test(arguments: Fixtures.fixtures)
         func `ISO_9899 → Primitives → ISO_9899`(fixture: Swift.String) {
             let iso = ISO_9899.String(fixture)
             let primitives = String_Primitives.String(iso.view)

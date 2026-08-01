@@ -60,12 +60,13 @@
         /// - Parameter string: The Swift String to convert.
         @inlinable
         public init(_ string: Swift.String) {
+            let contentLength = string.utf16.count
             let utf16 = Array(string.utf16) + [0]  // null-terminated
             let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: utf16.count)
             for (i, unit) in utf16.enumerated() {
                 buffer[i] = unit
             }
-            self.init(adopting: buffer, count: utf16.count - 1)
+            self.init(adopting: buffer, count: contentLength)
         }
     }
 

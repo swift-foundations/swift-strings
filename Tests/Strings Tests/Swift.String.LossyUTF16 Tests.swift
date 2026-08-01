@@ -73,6 +73,8 @@ extension Swift.String.Test.`Edge Case` {
     func `lossyUTF16 honors the full count including interior NUL`() {
         let units: [UInt16] = [0x0048, 0x0000, 0x0049]  // "H", NUL, "I"
         let decoded = Swift.String.lossyUTF16(units)
+        // swift-linter:disable:next string utf8 scanning
+        // REASON: asserting decoded Unicode scalar count (not byte scanning) — `.utf8` cannot express this check.
         #expect(decoded.unicodeScalars.count == 3)
         #expect(decoded == "H\u{0}I")
     }

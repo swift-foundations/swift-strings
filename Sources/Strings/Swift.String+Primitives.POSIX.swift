@@ -48,12 +48,13 @@
         /// - Parameter string: The Swift String to convert.
         @inlinable
         public init(_ string: Swift.String) {
+            let contentLength = string.utf8.count
             let utf8 = Array(string.utf8) + [0]
             let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: utf8.count)
             for (i, byte) in utf8.enumerated() {
                 unsafe (buffer[i] = byte)
             }
-            unsafe self.init(adopting: buffer, count: utf8.count - 1)
+            unsafe self.init(adopting: buffer, count: contentLength)
         }
     }
 

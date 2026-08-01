@@ -61,12 +61,7 @@
         /// - Returns: The UTF-8-encoded bytes.
         @inlinable
         public var utf8Bytes: [UInt8] {
-            var bytes: [UInt8] = []
-            bytes.reserveCapacity(count * 3)  // worst-case BMP UTF-8 expansion
-            for scalar in Swift.String(decoding: self, as: UTF16.self).unicodeScalars {
-                UTF8.encode(scalar) { bytes.append($0) }
-            }
-            return bytes
+            Array(Swift.String(decoding: self, as: UTF16.self).utf8)
         }
 
         /// Appends platform-native code units as UTF-8 bytes into a buffer.
@@ -100,9 +95,7 @@
         public func appendUTF8<Buffer: RangeReplaceableCollection>(
             into buffer: inout Buffer
         ) where Buffer.Element == UInt8 {
-            for scalar in Swift.String(decoding: self, as: UTF16.self).unicodeScalars {
-                UTF8.encode(scalar) { buffer.append($0) }
-            }
+            buffer.append(contentsOf: Swift.String(decoding: self, as: UTF16.self).utf8)
         }
     }
 
