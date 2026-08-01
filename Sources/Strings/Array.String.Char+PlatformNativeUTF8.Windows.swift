@@ -61,7 +61,7 @@
         /// - Returns: The UTF-8-encoded bytes.
         @inlinable
         public var utf8Bytes: [UInt8] {
-            Array(Swift.String(decoding: self, as: UTF16.self).utf8)
+            [UInt8](Swift.String(decoding: self, as: UTF16.self).utf8)
         }
 
         /// Appends platform-native code units as UTF-8 bytes into a buffer.
