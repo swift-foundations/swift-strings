@@ -19,7 +19,8 @@ import Testing
 //
 // Locks the byte-level round-trip contract across the four bridge types
 // before later string-correction-cycle waves can drift the implementations.
-// Each suite covers one bridge edge from Research/string-type-ecosystem-model.md
+// Each suite covers one bridge edge from the central Research
+// `string-type-ecosystem-model.md` document
 // (§3 conversion graph, edges E1, E5, E12, E14).
 //
 // Any future change that breaks one of these tests indicates a divergence

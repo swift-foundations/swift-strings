@@ -77,7 +77,7 @@
         ///
         /// Both branches are stdlib's lossy decoder — invalid sequences
         /// become U+FFFD per the
-        /// [string-type-ecosystem-model.md](https://github.com/swift-institute/swift-institute/blob/main/Research/string-type-ecosystem-model.md)
+        /// [string-type-ecosystem-model.md](https://github.com/swift-institute/Research/blob/main/string-type-ecosystem-model.md)
         /// (line 387) "standard library's lossy UTF-8 decoder" semantics.
         /// Strings containing replacement characters cannot round-trip back
         /// to the source code units; for round-trip-safe diagnostics use
