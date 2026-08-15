@@ -44,7 +44,9 @@
         /// - Parameter owned: An owned OS-native path string to consume.
         @inlinable
         public init(_ owned: consuming String_Primitives.String) {
-            let units = unsafe Array(UnsafeBufferPointer(start: owned.view.pointer, count: owned.view.count))
+            let units = unsafe Array(
+                UnsafeBufferPointer(start: owned.view.pointer, count: owned.view.count)
+            )
             self = Swift.String.lossyUTF16(units)
         }
     }
@@ -62,7 +64,9 @@
         public init(_ string: Swift.String) {
             let contentLength = string.utf16.count
             let utf16 = Array(string.utf16) + [0]  // null-terminated
-            let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: utf16.count)
+            let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(
+                capacity: utf16.count
+            )
             for (i, unit) in utf16.enumerated() {
                 buffer[i] = unit
             }
@@ -93,7 +97,9 @@
         ) throws(E) -> R {
             let utf16Array = Array(self.utf16)
             let count = utf16Array.count
-            let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: count + 1)
+            let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(
+                capacity: count + 1
+            )
             defer { buffer.deallocate() }
             for (i, unit) in utf16Array.enumerated() {
                 buffer[i] = unit

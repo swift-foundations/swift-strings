@@ -107,7 +107,8 @@ struct `Swift.String ↔ ISO_9899.String round-trips` {
 
     static let multibyte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.multibyte
 
-    static let randomized: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.randomized
+    static let randomized: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`
+        .randomized
 }
 
 extension `Swift.String ↔ ISO_9899.String round-trips`.Integration {
@@ -154,9 +155,11 @@ extension `Swift.String ↔ ISO_9899.String round-trips`.Integration {
 
         static let curated: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.curated
 
-        static let multibyte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.multibyte
+        static let multibyte: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`
+            .multibyte
 
-        static let randomized: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`.randomized
+        static let randomized: [Swift.String] = `Swift.String ↔ Primitives.String round-trips`
+            .randomized
     }
 
     extension `Cross-L1 conversions (POSIX)`.Integration {
