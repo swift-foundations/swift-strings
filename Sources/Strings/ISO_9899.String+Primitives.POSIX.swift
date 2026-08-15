@@ -55,7 +55,9 @@
         @inlinable
         public init(_ view: borrowing ISO_9899.String.Borrowed) {
             let length = view.length
-            let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(capacity: length + 1)
+            let buffer = UnsafeMutablePointer<String_Primitives.String.Char>.allocate(
+                capacity: length + 1
+            )
 
             // Copy bytes (both are UInt8 on POSIX)
             let src = unsafe view.pointer
