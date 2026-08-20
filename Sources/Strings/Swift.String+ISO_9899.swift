@@ -47,7 +47,7 @@ extension ISO_9899.String {
         let contentLength = string.utf8.count
         let utf8 = Array(string.utf8) + [0]  // null-terminated
         let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: utf8.count)
-        unsafe utf8.withUnsafeBufferPointer { src in
+        utf8.withUnsafeBufferPointer { src in
             unsafe buffer.update(from: src.baseAddress!, count: src.count)
         }
         unsafe self.init(adopting: buffer, count: contentLength)
@@ -79,7 +79,7 @@ extension Swift.String {
         let count = utf8Array.count
         let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: count + 1)
         defer { unsafe buffer.deallocate() }
-        unsafe utf8Array.withUnsafeBufferPointer { src in
+        utf8Array.withUnsafeBufferPointer { src in
             if let base = src.baseAddress {
                 unsafe buffer.update(from: base, count: src.count)
             }
