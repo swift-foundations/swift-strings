@@ -1,45 +1,16 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-strings open source project
-//
-// Copyright (c) 2024-2026 Coen ten Thije Boonkkamp and the swift-strings project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
 import ISO_9899
 import String_Primitives
 import Testing
 
 @testable import Strings
 
-// MARK: - Wave 0 Safeguards: Bridge Round-Trip Equivalence
-//
-// Locks the byte-level round-trip contract across the four bridge types
-// before later string-correction-cycle waves can drift the implementations.
-// Each suite covers one bridge edge from the central Research
-// `string-type-ecosystem-model.md` document
-// (§3 conversion graph, edges E1, E5, E12, E14).
-//
-// Any future change that breaks one of these tests indicates a divergence
-// between an L3 bridge and the underlying L1 owning type's content semantics.
-
-// MARK: - Swift.String ↔ Primitives.String
-
 @Suite
 struct `Swift.String ↔ Primitives.String round-trips` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 
-    /// Cross-type round-trip contracts are integration-level: each test exercises the
-    /// bridge boundary between `Swift.String` and `String_Primitives.String`.
     @Suite struct Integration {}
 
-    /// All fixtures combined for parameterized tests. Hand-written + UTF-8 multi-byte
-    /// + seeded-random ASCII for stochastic coverage. No interior NUL (rejected by
-    /// owning types).
     static let fixtures: [Swift.String] = Self.curated + Self.multibyte + Self.randomized
 
     static let curated: [Swift.String] = [
@@ -51,8 +22,6 @@ struct `Swift.String ↔ Primitives.String round-trips` {
         Swift.String(repeating: "x", count: 1024),
     ]
 
-    /// On Windows, these traverse UTF-8 → UTF-16 → UTF-8 at the bridge boundaries;
-    /// round-trip must still be byte-identical at the `Swift.String` layer.
     static let multibyte: [Swift.String] = [
         "café",
         "naïve",
@@ -63,7 +32,6 @@ struct `Swift.String ↔ Primitives.String round-trips` {
         "👨‍👩‍👧‍👦",
     ]
 
-    /// Seeded pseudo-random ASCII fixtures for stochastic coverage.
     static let randomized: [Swift.String] = generateASCII(count: 64, seed: 0xC0DE_F00D_DEAD_BEEF)
 }
 
@@ -92,8 +60,6 @@ extension `Swift.String ↔ Primitives.String round-trips`.Integration {
         #expect(recovered == fixture)
     }
 }
-
-// MARK: - Swift.String ↔ ISO_9899.String
 
 @Suite
 struct `Swift.String ↔ ISO_9899.String round-trips` {
@@ -137,13 +103,6 @@ extension `Swift.String ↔ ISO_9899.String round-trips`.Integration {
     }
 }
 
-// MARK: - Cross-L1 conversions (POSIX only)
-//
-// Primitives.String.Char and ISO_9899.String.Char are both UInt8 on POSIX,
-// so cross-conversion is byte-identical. On Windows, Primitives.String.Char
-// is UInt16 (UTF-16) while ISO_9899.String.Char is UInt8 always — direct
-// cross-conversion is not provided as public API and the test is gated.
-
 #if !os(Windows)
     @Suite
     struct `Cross-L1 conversions (POSIX)` {
@@ -170,8 +129,7 @@ extension `Swift.String ↔ ISO_9899.String round-trips`.Integration {
             let primitives = String_Primitives.String(fixture)
             let iso = ISO_9899.String(primitives.view)
             let recovered = String_Primitives.String(iso.view)
-            // Compare via Swift.String round-trip to fixture (avoids consuming
-            // the owned ~Copyable values inside the #expect macro closure).
+
             let recoveredSwift = Swift.String(recovered)
             #expect(recoveredSwift == fixture)
         }
@@ -186,11 +144,6 @@ extension `Swift.String ↔ ISO_9899.String round-trips`.Integration {
         }
     }
 #endif
-
-// MARK: - SplitMix64 PRNG
-//
-// Seeded 64-bit PRNG for reproducible fixture generation. Mirror of
-// swift-paths' Cross Layer Equivalence test infrastructure.
 
 private struct SplitMix64 {
     private var state: UInt64
@@ -210,9 +163,6 @@ extension SplitMix64 {
     }
 }
 
-/// Generates `count` printable-ASCII strings (length 1–64).
-/// Avoids 0x00 (interior NUL forbidden) and limits to printable
-/// range so the result is valid input for every owning type.
 private func generateASCII(count: Int, seed: UInt64) -> [Swift.String] {
     var rng = SplitMix64(seed: seed)
     var result: [Swift.String] = []
@@ -222,8 +172,7 @@ private func generateASCII(count: Int, seed: UInt64) -> [Swift.String] {
         var bytes: [UInt8] = []
         bytes.reserveCapacity(length)
         for _ in 0..<length {
-            // Printable ASCII range 0x20-0x7E inclusive. Excludes 0x00 (NUL),
-            // 0x01-0x1F (control), 0x7F (DEL).
+
             bytes.append(UInt8(rng.next() % 95) + 0x20)
         }
         result.append(Swift.String(decoding: bytes, as: UTF8.self))

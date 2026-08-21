@@ -1,19 +1,7 @@
-// Swift.String+ISO_9899.swift
-// swift-strings
-//
-// Bridges between Swift.String and ISO_9899.String
-
 public import ISO_9899
 
-// MARK: - Swift.String FROM ISO_9899.String
-
 extension Swift.String {
-    /// Creates a Swift String from an ISO C byte string view.
-    ///
-    /// Interprets the bytes as UTF-8.
-    ///
-    /// - Parameter view: A borrowed view of an ISO C byte string.
-    /// - Note: Invalid UTF-8 sequences are replaced with the Unicode replacement character.
+
     @inlinable
     public init(_ view: borrowing ISO_9899.String.Borrowed) {
         self = unsafe Swift.String(
@@ -21,11 +9,6 @@ extension Swift.String {
         )
     }
 
-    /// Creates a Swift String from an owned ISO C byte string.
-    ///
-    /// Interprets the bytes as UTF-8. Consumes the owned string.
-    ///
-    /// - Parameter owned: An owned ISO C byte string to consume.
     @inlinable
     public init(_ owned: consuming ISO_9899.String) {
         self = unsafe Swift.String(
@@ -34,18 +17,12 @@ extension Swift.String {
     }
 }
 
-// MARK: - ISO_9899.String FROM Swift.String
-
 extension ISO_9899.String {
-    /// Creates an owned ISO C byte string from a Swift String.
-    ///
-    /// Encodes the string as UTF-8.
-    ///
-    /// - Parameter string: The Swift String to convert.
+
     @inlinable
     public init(_ string: Swift.String) {
         let contentLength = string.utf8.count
-        let utf8 = Array(string.utf8) + [0]  // null-terminated
+        let utf8 = Array(string.utf8) + [0]
         let buffer = UnsafeMutablePointer<ISO_9899.String.Char>.allocate(capacity: utf8.count)
         utf8.withUnsafeBufferPointer { src in
             unsafe buffer.update(from: src.baseAddress!, count: src.count)
@@ -54,22 +31,8 @@ extension ISO_9899.String {
     }
 }
 
-// MARK: - Borrowing Access
-
 extension Swift.String {
-    // WORKAROUND: @_optimize(none) — CopyPropagation false positive on ~Escapable ISO_9899.String.Borrowed.
-    // WHY: Same compiler bug as Property.Inout (mark_dependence classified as PointerEscape), but this
-    //   type's ~Escapable cannot be removed (it's in swift-standards, not under our control for this fix).
-    // WHEN TO REMOVE: When swiftlang/swift fixes mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46).
-    // TRACKING: swiftlang/swift mark_dependence canonicalization (OSSACanonicalizeOwned.cpp:40-46); not filed upstream.
-    /// Executes a closure with a borrowed ISO C byte string view.
-    ///
-    /// The view is valid only for the duration of the closure.
-    /// The string is encoded as UTF-8.
-    ///
-    /// - Parameter body: A closure that receives the borrowed view.
-    /// - Returns: The value returned by the closure.
-    /// - Throws: Rethrows any error thrown by the closure.
+
     @_optimize(none)
     @inlinable
     public func withISO9899View<R: ~Copyable, E: Swift.Error>(
@@ -84,7 +47,7 @@ extension Swift.String {
                 unsafe buffer.update(from: base, count: src.count)
             }
         }
-        unsafe (buffer[count] = 0)  // null-terminate
+        unsafe (buffer[count] = 0)
         let view = unsafe ISO_9899.String.Borrowed(UnsafePointer(buffer), count: count)
         return try body(view)
     }
